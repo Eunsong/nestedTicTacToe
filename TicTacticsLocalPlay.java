@@ -36,47 +36,38 @@ public class TicTacticsLocalPlay{
     public void close(){
         this.sc.close();
     }
-    
-    private void playX(int bigRow, int bigCol){
-        assert this.whosTurn == 1;
+
+    private void play(int bigRow, int bigCol, int turn){
         while (true){
             try{
-                System.out.println(String.format("X Playing cell %1d-%1d", bigRow, bigCol));
-                System.out.println("Enter row, col to place X in the sub-board");
+                assert (turn == 1 || turn == -1);
+                String whom = (turn == 1? "X" : "O" );
+                System.out.println(String.format(
+                                   "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
+                System.out.println(String.format(
+                                   "Enter row, col to place %s in the sub-board", whom));
                 String[] tokens = this.readLine().trim().split(",");
                 int subRow =  Integer.parseInt(tokens[0].trim());
                 int subCol =  Integer.parseInt(tokens[1].trim());
                 this.nextBigRow = subRow;
                 this.nextBigCol = subCol;
-                board.putX(bigRow, bigCol, subRow, subCol);
-                this.whosTurn = -1;
+                if ( turn == 1 ) board.putX(bigRow, bigCol, subRow, subCol);
+                else board.putO(bigRow, bigCol, subRow, subCol);
+                this.whosTurn = -turn;
                 break;
             }
             catch ( Exception e){
                 System.out.println("invalid selection. Try again.");
             }
         }
+    }
+    private void playX(int bigRow, int bigCol){
+        play(bigRow, bigCol, 1);
     }
     private void playO(int bigRow, int bigCol){
-        assert this.whosTurn == -1;
-        while (true){
-            try{
-                System.out.println(String.format("O Playing cell %1d-%1d", bigRow, bigCol));
-                System.out.println("Enter row, col to place O in the sub-board");
-                String[] tokens = this.sc.nextLine().trim().split(",");
-                int subRow =  Integer.parseInt(tokens[0].trim());
-                int subCol =  Integer.parseInt(tokens[1].trim());
-                this.nextBigRow = subRow;
-                this.nextBigCol = subCol;
-                board.putO(bigRow, bigCol, subRow, subCol);
-                this.whosTurn = 1;
-                break;
-            }
-            catch ( Exception e){
-                System.out.println("invalid selection. Try again.");
-            }
-        }
+        play(bigRow, bigCol, -1);
     }
+
     private void chooseSubBoard(){
         String whom = (this.whosTurn == 1? "X" : "O" );
         while ( this.board.evaluateSubBoard(this.nextBigRow, this.nextBigCol) != 0 ){
