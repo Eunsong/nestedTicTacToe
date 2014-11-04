@@ -3,6 +3,8 @@ import java.util.Arrays;
 public class SubBoard{
 
     private int[][] board;
+    private static final String horizontalLine = "-------------";
+
 
     public SubBoard(){
         this.board = new int[3][3];
@@ -26,20 +28,36 @@ public class SubBoard{
 
     
     public void printBoard(){
-        System.out.println("    0   1   2  ");
-        System.out.println(String.format("0 |%2d |%2d |%2d |", 
-                                        board[0][0], board[0][1], board[0][2])); 
+        System.out.println(getBoardString());
+    }
     
+    public String getBoardString(){
+        String boardString = getRowString(0) + "\n" + horizontalLine + "\n" + 
+                             getRowString(1) + "\n" + horizontalLine + "\n" +
+                             getRowString(2);
+        return boardString;
+    }    
+
+    public String getRowString(int row){
+        return String.format(" %2s |%2s |%2s  ", 
+                             getStr(row,0), getStr(row,1), getStr(row,2));
+    }
+    private String getStr(int row, int col){
+        if (this.board[row][col] == 0) return "  ";
+        else return (board[row][col] == 1? " X" : " O");
     }
 
 
+    /***************************************************************
+     *                      Evaluation methods                     *
+     ***************************************************************/
 
     // return 1 if X won the game, -1 if O won the game, 0 otherwise
     public int evaluate(){
         // check diagonals
-        int diag = checkDiags();
-        if ( diag != 0){
-            return diag;
+        int diagResult = checkDiags();
+        if ( diagResult != 0){
+            return diagResult;
         }
         int rowResult = 0;
         for ( int col = 0; col < 3; col++){
