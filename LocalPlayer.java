@@ -1,14 +1,39 @@
+/**
+ * This class implements local-player version of GamePlayer interface.
+ * It ensures a local player to paly within the proper game rule.
+ * Since there can be no player without an actual game, an instance of 
+ * this class works only with a TicTactics instance, which needs to
+ * be added to the instance object by addToGame() method.
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
+
 public class LocalPlayer implements GamePlayer{
    
     private TicTactics game;
     private final int side; // 1 if X, -1 if O
     private final String symbol;   
- 
+
+    /**
+     * public constructor 
+     * 
+     * @param side integer indicating which side the player plays for 
+     *        "X" (side=1) or for "O" (side=-1)
+     */
     public LocalPlayer(int side){
         assert ( side == 1 || side == -1 );
         this.side = side;
         this.symbol = ( side == 1? "X" : "O"); 
     }
+
+    /**
+     * a public method making a channel from this instance to a game instance.
+     * this method must be invoked before invoking play() method.
+     *
+     * @param game an instance object of TicTactics interface where this instance
+     *             will be played
+     */
     public void addToGame(TicTactics game){
         this.game = game;
     }

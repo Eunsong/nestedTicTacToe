@@ -1,3 +1,12 @@
+/**
+ * Class representing a board of Tic-Tactics(or double-nested tic-tac-toe) game.
+ * This class object contains internal SubBoard double-array, and methods to
+ * evaluate winnings.
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
+
 public class TicTacticsBoard{
 
     private SubBoard[][] board;

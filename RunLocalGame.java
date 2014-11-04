@@ -1,6 +1,7 @@
 /**
  * Basic local two-person play version of doubly nested tic-tac-toe
- * (a.k.a tic-tactics) game.
+ * (a.k.a tic-tactics) game. Game board is displayed using BoardTextPrinter
+ * which supports colored texts when run in bash enviornment. 
  *
  * @author Eunsong Choi
  * @version 1.0

@@ -1,6 +1,10 @@
 import java.util.*;
 
 /**
+ * A back-bone class of doublely-nested tic-tac-toe(aka tic-tactics) game.
+ * One can use this class instance with BoardPrinter instance and GamePlayer 
+ * instances to run different types of games-e.g. Local two person game, 
+ * over-the-network two-person game, single person game with computer AI etc.  
  *
  * @author Eunsong Choi
  * @version 1.0

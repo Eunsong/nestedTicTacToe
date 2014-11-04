@@ -1,3 +1,11 @@
+/**
+ * Class representing a sub-board of nested tic-tac-toe(aka Tic-Tactics) game.
+ * A sub-board is essentially a regular tic-tac-toe board. 
+ *
+ * @author Eunsong Choi(eunsong.choi@gmail.com)
+ * @version 1.0
+ */
+
 import java.util.Arrays;
 
 public class SubBoard{

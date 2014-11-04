@@ -1,7 +1,7 @@
 public interface BoardPrinter{
 
     /**
-     * prints the tictactics board representation 
+     * prints a tictactics board representation 
      */
     public void printBoard();
 
