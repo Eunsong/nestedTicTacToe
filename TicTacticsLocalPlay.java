@@ -24,6 +24,7 @@ public class TicTacticsLocalPlay{
         return this.board;
     } 
     public void playNextTurn(){
+        chooseSubBoard();
         int bigRow = this.nextBigRow;
         int bigCol = this.nextBigCol;
         if ( this.whosTurn == 1 ) playX(bigRow, bigCol);
@@ -35,7 +36,7 @@ public class TicTacticsLocalPlay{
     public void close(){
         this.sc.close();
     }
-
+    
     private void playX(int bigRow, int bigCol){
         assert this.whosTurn == 1;
         while (true){
@@ -76,6 +77,18 @@ public class TicTacticsLocalPlay{
             }
         }
     }
+    private void chooseSubBoard(){
+        String whom = (this.whosTurn == 1? "X" : "O" );
+        while ( this.board.evaluateSubBoard(this.nextBigRow, this.nextBigCol) != 0 ){
+            System.out.println(String.format("sub-board %d-%d is already closed.", 
+                                             this.nextBigRow, this.nextBigCol)); 
+            System.out.println(whom + " choose new sub-board(row, col) to play : ");
+            String[] tokens = this.readLine().trim().split(",");
+            this.nextBigRow = Integer.parseInt(tokens[0].trim());
+            this.nextBigCol = Integer.parseInt(tokens[1].trim());
+        }
+    }
+
 
     public static void main(String[] args){
         
@@ -85,7 +98,7 @@ public class TicTacticsLocalPlay{
         System.out.println("X goes first. Choose sub-board(row, col) to play :");
         while (true){
             try{
-                String[] tokens = game.sc.nextLine().trim().split(",");
+                String[] tokens = game.readLine().trim().split(",");
                 int bigRow = Integer.parseInt(tokens[0].trim());
                 int bigCol = Integer.parseInt(tokens[1].trim());
                 game.playX(bigRow, bigCol);

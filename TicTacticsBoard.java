@@ -65,6 +65,9 @@ public class TicTacticsBoard{
         }
         return 0;
     }
+    public int evaluateSubBoard(int row, int col){
+        return this.board[row][col].evaluate();
+    }
     /***************************************************************/
 
 

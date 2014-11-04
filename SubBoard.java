@@ -4,26 +4,30 @@ public class SubBoard{
 
     private int[][] board;
     private static final String horizontalLine = "-------------";
-
+    private int numberOfOccupiedCells;
 
     public SubBoard(){
         this.board = new int[3][3];
         for ( int row = 0; row < 3; row++){
             Arrays.fill(this.board[row], 0);
         }
+        this.numberOfOccupiedCells = 0;
     }
 
     public void putX(int row, int col){
         checkValid(row, col);
         this.board[row][col] = 1;
+        this.numerOfOccupiedCells += 1;
     }
 
     public void putO(int row, int col){
         checkValid(row, col);
         this.board[row][col] = -1;
+        this.numerOfOccupiedCells += 1;
     } 
     private void resetCell(int row, int col){
         this.board[row][col] = 0;
+        this.numerOfOccupiedCells -= 1;
     }
 
     
@@ -52,7 +56,8 @@ public class SubBoard{
      *                      Evaluation methods                     *
      ***************************************************************/
 
-    // return 1 if X won the game, -1 if O won the game, 0 otherwise
+    // return 1 if X won the game, -1 if O won the game, 0 notdetermined,
+    // -2 draw (fully occupied but no one wins)
     public int evaluate(){
         // check diagonals
         int diagResult = checkDiags();
@@ -69,7 +74,7 @@ public class SubBoard{
             colResult = checkCol(row);
             if ( colResult != 0 ) return colResult;
         }
-        return 0; // draw or undetermined 
+        return (this.numberOfOccupiedCells == 9 ? -2 : 0); // draw or undetermined 
     }
 
     private int checkDiags(){
