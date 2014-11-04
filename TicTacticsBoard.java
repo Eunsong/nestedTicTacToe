@@ -1,8 +1,6 @@
 public class TicTacticsBoard{
 
     private SubBoard[][] board;
-    private static final String horizontalLine = getHorizontalLine(45);
-    private static final String horizontalSubLine = getHorizontalSubLine(11, 5); 
 
     public TicTacticsBoard(){
         this.board = new SubBoard[3][3];
@@ -11,6 +9,10 @@ public class TicTacticsBoard{
                 this.board[row][col] = new SubBoard();
             }
         }
+    }
+
+    public SubBoard getSubBoard(int bigRow, int bigCol){
+        return this.board[bigRow][bigCol];
     }
 
     public void putX(int bigRow, int bigCol, int subRow, int subCol){
@@ -70,44 +72,6 @@ public class TicTacticsBoard{
     }
     /***************************************************************/
 
-
-
-
-    /***************************************************************
-     *                  board representations                      *
-     ***************************************************************/
-    public void printBoard(){
-        System.out.println(horizontalLine);            
-        for ( int bigRow = 0; bigRow < 3; bigRow++){
-            for ( int subRow = 0; subRow < 3; subRow++){
-                System.out.println(getRowString(bigRow, subRow));
-                if ( subRow != 2 ) System.out.println(horizontalSubLine);
-            }
-            System.out.println(horizontalLine);
-        }
-    }
-    public String getRowString(int bigRow, int subRow){
-        String retval = "";
-        for ( int bigCol = 0; bigCol < 3; bigCol++){
-            SubBoard subBoard = this.board[bigRow][bigCol];
-            retval += subBoard.getRowString(subRow);
-            if ( bigCol != 2 ) retval += " | ";
-        }
-        return retval;
-    }
-    private static String getHorizontalLine(int size){
-        return new String(new char[size]).replace("\0", "-");
-    }
-    private static String getHorizontalSubLine(int subsize, int spacingsize){
-        String spacing = new String(new char[spacingsize]).replace("\0", " ");
-        String retval = " ";
-        for ( int col = 0; col < 3; col++){
-            retval += getHorizontalLine(subsize);
-            if ( col != 2 ) retval += spacing;
-        }
-        return retval;
-    }
-    /***************************************************************/
 
 
 }

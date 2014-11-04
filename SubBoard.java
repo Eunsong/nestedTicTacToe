@@ -14,23 +14,28 @@ public class SubBoard{
         this.numberOfOccupiedCells = 0;
     }
 
+    public int getCell(int row, int col){
+        if ( row < 0 || row > 2 || col < 0 || col > 2 ){
+            throw new BoardPlayException("Board index out of range");
+        }
+        return this.board[row][col];
+    }
     public void putX(int row, int col){
         checkValid(row, col);
         this.board[row][col] = 1;
-        this.numerOfOccupiedCells += 1;
+        this.numberOfOccupiedCells += 1;
     }
 
     public void putO(int row, int col){
         checkValid(row, col);
         this.board[row][col] = -1;
-        this.numerOfOccupiedCells += 1;
+        this.numberOfOccupiedCells += 1;
     } 
     private void resetCell(int row, int col){
         this.board[row][col] = 0;
-        this.numerOfOccupiedCells -= 1;
+        this.numberOfOccupiedCells -= 1;
     }
 
-    
     public void printBoard(){
         System.out.println(getBoardString());
     }

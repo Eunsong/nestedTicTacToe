@@ -11,18 +11,23 @@ import java.util.*;
 public class TicTacticsLocalPlay{
 
     private TicTacticsBoard board;
+    private BoardPrinter printer;
     private Scanner sc;
     private int whosTurn;
     private int nextBigRow, nextBigCol;
 
     private TicTacticsLocalPlay(){
         this.board = new TicTacticsBoard(); 
+        this.printer = new BoardTextPrinter(this.board);
         this.sc = new Scanner(System.in);
         this.whosTurn = 1; // X always goes first 
     }
     public TicTacticsBoard getBoard() {
         return this.board;
     } 
+    public void printBoard(){
+        this.printer.printBoard();
+    }
     public void playNextTurn(){
         chooseSubBoard();
         int bigRow = this.nextBigRow;
@@ -85,7 +90,7 @@ public class TicTacticsLocalPlay{
         
         TicTacticsLocalPlay game = new TicTacticsLocalPlay();
         TicTacticsBoard board = game.getBoard();
-        board.printBoard();
+        game.printBoard();
         System.out.println("X goes first. Choose sub-board(row, col) to play :");
         while (true){
             try{
@@ -93,7 +98,7 @@ public class TicTacticsLocalPlay{
                 int bigRow = Integer.parseInt(tokens[0].trim());
                 int bigCol = Integer.parseInt(tokens[1].trim());
                 game.playX(bigRow, bigCol);
-                board.printBoard();
+                game.printBoard();
                 break;
             }
             catch ( Exception e){
@@ -102,9 +107,8 @@ public class TicTacticsLocalPlay{
         }
         while (true){
             game.playNextTurn();
-            board.printBoard();
+            game.printBoard();
             int result = board.evaluate();
-            System.out.println(result);
             if ( result != 0 ){
                 String whom = ( result == 1 ? "X" : "O");
                 System.out.println(whom + " won the game!\n");
