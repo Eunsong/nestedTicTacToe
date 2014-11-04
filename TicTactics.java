@@ -1,12 +1,135 @@
+import java.util.*;
+
+/**
+ *
+ * @author Eunsong Choi
+ * @version 1.0
+ */
+
 public class TicTactics{
 
-    private SubBoard[][] board;
+    private TicTacticsBoard board;
+    private BoardPrinter printer;
+    private GamePlayer player1, player2;
+    private Scanner sc;
+    private int whosTurn;
+    private int nextBigRow, nextBigCol;
 
-    public TicTactics(){
-        this.board = new SubBoard[3][3];
+    private TicTactics(TicTacticsBoard board, BoardPrinter printer,
+                       GamePlayer player1, GamePlayer player2){
+        this.board = board; 
+        this.printer = printer;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.player1.addToGame(this);
+        this.player2.addToGame(this);
+        this.sc = new Scanner(System.in);
+        this.whosTurn = 1; // X always goes first 
+    }
+    public TicTacticsBoard getBoard() {
+        return this.board;
+    } 
+    public int getNextBigRow(){
+        return this.nextBigRow;
+    }
+    public int getNextBigCol(){
+        return this.nextBigCol;
+    }
+    public void setNextBigRow(int newRow){
+        this.nextBigRow = newRow;
+    }
+    public void setNextBigCol(int newCol){
+        this.nextBigCol = newCol;
+    }
+    public void printBoard(){
+        this.printer.printBoard();
+    }
+    public void playNextTurn(){
+        chooseSubBoard();
+        int bigRow = this.nextBigRow;
+        int bigCol = this.nextBigCol;
+        if ( this.whosTurn == 1 ) playX(bigRow, bigCol);
+        else playO(bigRow, bigCol);
+    }
+    public String readLine(){
+        return this.sc.nextLine();
+    }
+    public void close(){
+        this.sc.close();
+    }
+
+    private void play(int bigRow, int bigCol, int turn){
+        while (true){
+            try{
+                assert (turn == 1 || turn == -1);
+                String whom = (turn == 1? "X" : "O" );
+                System.out.println(String.format(
+                                   "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
+                System.out.println(String.format(
+                                   "Enter row, col to place %s in the sub-board", whom));
+                String[] tokens = this.readLine().trim().split(",");
+                int subRow =  Integer.parseInt(tokens[0].trim());
+                int subCol =  Integer.parseInt(tokens[1].trim());
+                this.nextBigRow = subRow;
+                this.nextBigCol = subCol;
+                if ( turn == 1 ) board.putX(bigRow, bigCol, subRow, subCol);
+                else board.putO(bigRow, bigCol, subRow, subCol);
+                this.whosTurn = -turn;
+                break;
+            }
+            catch ( Exception e){
+                System.out.println("invalid selection. Try again.");
+            }
+        }
+    }
+    private void playX(int bigRow, int bigCol){
+        play(bigRow, bigCol, 1);
+    }
+    private void playO(int bigRow, int bigCol){
+        play(bigRow, bigCol, -1);
+    }
+
+    private void chooseSubBoard(){
+        String whom = (this.whosTurn == 1? "X" : "O" );
+        while ( this.board.evaluateSubBoard(this.nextBigRow, this.nextBigCol) != 0 ){
+            System.out.println(String.format("sub-board %d-%d is already closed.", 
+                                             this.nextBigRow, this.nextBigCol)); 
+            System.out.println(whom + " choose new sub-board(row, col) to play : ");
+            String[] tokens = this.readLine().trim().split(",");
+            this.nextBigRow = Integer.parseInt(tokens[0].trim());
+            this.nextBigCol = Integer.parseInt(tokens[1].trim());
+        }
     }
 
 
+    public void run(){
 
+        printBoard();
+        System.out.println("X goes first. Choose sub-board(row, col) to play :");
+        while (true){
+            try{
+                String[] tokens = readLine().trim().split(",");
+                int bigRow = Integer.parseInt(tokens[0].trim());
+                int bigCol = Integer.parseInt(tokens[1].trim());
+                playX(bigRow, bigCol);
+                printBoard();
+                break;
+            }
+            catch ( Exception e){
+                System.out.println("invalid selection. Try again.");
+            }
+        }
+        while (true){
+            playNextTurn();
+            printBoard();
+            int result = board.evaluate();
+            if ( result != 0 ){
+                String whom = ( result == 1 ? "X" : "O");
+                System.out.println(whom + " won the game!\n");
+                close();
+                System.exit(0);
+            }
+        }
+    }
 
 }
