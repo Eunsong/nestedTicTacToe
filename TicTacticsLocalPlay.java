@@ -11,7 +11,7 @@ import java.util.*;
 public class TicTacticsLocalPlay{
 
     private TicTacticsBoard board;
-    public Scanner sc;
+    private Scanner sc;
     private int whosTurn;
     private int nextBigRow, nextBigCol;
 
@@ -23,12 +23,17 @@ public class TicTacticsLocalPlay{
     public TicTacticsBoard getBoard() {
         return this.board;
     } 
-
     public void playNextTurn(){
         int bigRow = this.nextBigRow;
         int bigCol = this.nextBigCol;
         if ( this.whosTurn == 1 ) playX(bigRow, bigCol);
         else playO(bigRow, bigCol);
+    }
+    public String readLine(){
+        return this.sc.nextLine();
+    }
+    public void close(){
+        this.sc.close();
     }
 
     private void playX(int bigRow, int bigCol){
@@ -37,7 +42,7 @@ public class TicTacticsLocalPlay{
             try{
                 System.out.println(String.format("X Playing cell %1d-%1d", bigRow, bigCol));
                 System.out.println("Enter row, col to place X in the sub-board");
-                String[] tokens = this.sc.nextLine().trim().split(",");
+                String[] tokens = this.readLine().trim().split(",");
                 int subRow =  Integer.parseInt(tokens[0].trim());
                 int subCol =  Integer.parseInt(tokens[1].trim());
                 this.nextBigRow = subRow;
@@ -99,7 +104,7 @@ public class TicTacticsLocalPlay{
             if ( result != 0 ){
                 String whom = ( result == 1 ? "X" : "O");
                 System.out.println(whom + " won the game!\n");
-                game.sc.close();
+                game.close();
                 System.exit(0);
             }
         }
