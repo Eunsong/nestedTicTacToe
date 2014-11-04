@@ -8,14 +8,14 @@ import java.util.*;
 
 public class TicTactics{
 
-    private TicTacticsBoard board;
-    private BoardPrinter printer;
-    private GamePlayer player1, player2;
-    private Scanner sc;
+    private final TicTacticsBoard board;
+    private final BoardPrinter printer;
+    private final GamePlayer player1, player2;
+    private final Scanner sc;
     private int whosTurn;
     private int nextBigRow, nextBigCol;
 
-    private TicTactics(TicTacticsBoard board, BoardPrinter printer,
+    public TicTactics(TicTacticsBoard board, BoardPrinter printer,
                        GamePlayer player1, GamePlayer player2){
         this.board = board; 
         this.printer = printer;
@@ -25,6 +25,8 @@ public class TicTactics{
         this.player2.addToGame(this);
         this.sc = new Scanner(System.in);
         this.whosTurn = 1; // X always goes first 
+        this.nextBigRow = -1;
+        this.nextBigCol = -1;
     }
     public TicTacticsBoard getBoard() {
         return this.board;
@@ -45,11 +47,8 @@ public class TicTactics{
         this.printer.printBoard();
     }
     public void playNextTurn(){
-        chooseSubBoard();
-        int bigRow = this.nextBigRow;
-        int bigCol = this.nextBigCol;
-        if ( this.whosTurn == 1 ) playX(bigRow, bigCol);
-        else playO(bigRow, bigCol);
+        if ( this.whosTurn == 1 ) player1.play();
+        else player2.play();
     }
     public String readLine(){
         return this.sc.nextLine();
@@ -57,61 +56,17 @@ public class TicTactics{
     public void close(){
         this.sc.close();
     }
-
-    private void play(int bigRow, int bigCol, int turn){
-        while (true){
-            try{
-                assert (turn == 1 || turn == -1);
-                String whom = (turn == 1? "X" : "O" );
-                System.out.println(String.format(
-                                   "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
-                System.out.println(String.format(
-                                   "Enter row, col to place %s in the sub-board", whom));
-                String[] tokens = this.readLine().trim().split(",");
-                int subRow =  Integer.parseInt(tokens[0].trim());
-                int subCol =  Integer.parseInt(tokens[1].trim());
-                this.nextBigRow = subRow;
-                this.nextBigCol = subCol;
-                if ( turn == 1 ) board.putX(bigRow, bigCol, subRow, subCol);
-                else board.putO(bigRow, bigCol, subRow, subCol);
-                this.whosTurn = -turn;
-                break;
-            }
-            catch ( Exception e){
-                System.out.println("invalid selection. Try again.");
-            }
-        }
+    public void setNextTurn(){
+        this.whosTurn *= -1;
     }
-    private void playX(int bigRow, int bigCol){
-        play(bigRow, bigCol, 1);
-    }
-    private void playO(int bigRow, int bigCol){
-        play(bigRow, bigCol, -1);
-    }
-
-    private void chooseSubBoard(){
-        String whom = (this.whosTurn == 1? "X" : "O" );
-        while ( this.board.evaluateSubBoard(this.nextBigRow, this.nextBigCol) != 0 ){
-            System.out.println(String.format("sub-board %d-%d is already closed.", 
-                                             this.nextBigRow, this.nextBigCol)); 
-            System.out.println(whom + " choose new sub-board(row, col) to play : ");
-            String[] tokens = this.readLine().trim().split(",");
-            this.nextBigRow = Integer.parseInt(tokens[0].trim());
-            this.nextBigCol = Integer.parseInt(tokens[1].trim());
-        }
-    }
-
 
     public void run(){
 
         printBoard();
-        System.out.println("X goes first. Choose sub-board(row, col) to play :");
+        System.out.println("X goes first.");
         while (true){
             try{
-                String[] tokens = readLine().trim().split(",");
-                int bigRow = Integer.parseInt(tokens[0].trim());
-                int bigCol = Integer.parseInt(tokens[1].trim());
-                playX(bigRow, bigCol);
+                this.player1.play();
                 printBoard();
                 break;
             }

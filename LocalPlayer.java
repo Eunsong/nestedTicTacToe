@@ -14,12 +14,16 @@ public class LocalPlayer implements GamePlayer{
     }
 
     public void play(){
-
+        chooseSubBoard();
+        int bigRow = this.game.getNextBigRow();
+        int bigCol = this.game.getNextBigCol();
+        play(bigRow, bigCol);
     }
 
-    private void play(int bigRow, int bigCol){
+    public void play(int bigRow, int bigCol){
         while (true){
-            try{
+            try{    
+                chooseSubBoard();
                 String whom = this.symbol;
                 System.out.println(String.format(
                                    "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
@@ -36,6 +40,7 @@ public class LocalPlayer implements GamePlayer{
                 else {
                     this.game.getBoard().putO(bigRow, bigCol, subRow, subCol);
                 }
+                this.game.setNextTurn();
                 break;
             }
             catch ( Exception e){
@@ -49,6 +54,12 @@ public class LocalPlayer implements GamePlayer{
         TicTacticsBoard board = this.game.getBoard();
         int nextBigRow = this.game.getNextBigRow();
         int nextBigCol = this.game.getNextBigCol();
+        while ( !isValid(nextBigRow, nextBigCol) ){
+            System.out.println("Choose sub-board(row, col) to play : ");
+            String[] tokens = this.game.readLine().trim().split(",");
+            nextBigRow = Integer.parseInt(tokens[0].trim());
+            nextBigCol = Integer.parseInt(tokens[1].trim());
+        } 
         while ( board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
             System.out.println(String.format("sub-board %d-%d is already closed.",
                                              nextBigRow, nextBigCol));
@@ -61,5 +72,8 @@ public class LocalPlayer implements GamePlayer{
         this.game.setNextBigCol(nextBigCol);
     }
 
+    private static boolean isValid(int row, int col){
+        return (row >= 0 && row < 3 && col >= 0 && col < 3);
+    }
 
 }
