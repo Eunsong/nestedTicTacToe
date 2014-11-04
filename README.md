@@ -4,6 +4,7 @@ A double nested tic-tac-toe game (a.k.a Tic-Tactics) written in Java. A main bac
 
 ### Usage
 local two-person play version
+
     javac RunLocalGame.java
     java RunLocalGame
 
