@@ -8,4 +8,9 @@ local two-person play version
     javac RunLocalGame.java
     java RunLocalGame
 
+over the net-work two-person play version
+
+    javac RunNetworkGame.java
+    java RunNetworkGame
+
 
