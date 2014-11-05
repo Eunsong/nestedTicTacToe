@@ -29,6 +29,8 @@ public class RunNetworkGame{
                                 + ipAndPort);
             Socket client = listener.accept();
             listener.close();
+            String cl_address = client.getRemoteSocketAddress().toString();
+            System.out.println("connected to the client " + cl_address); 
             return client; 
         }
         catch ( IOException e){
@@ -61,6 +63,8 @@ public class RunNetworkGame{
             String ip = tokens[0].trim();
             int port = Integer.parseInt( tokens[1] );
             Socket server = new Socket(ip, port);
+            String server_address = server.getRemoteSocketAddress().toString();
+            System.out.println("connected to the server " + server_address); 
             return server;
         }
         catch ( IOException e){

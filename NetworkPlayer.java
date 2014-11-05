@@ -137,7 +137,8 @@ public class NetworkPlayer implements GamePlayer{
                 this.game.setNextBigCol(nextBigCol);
             }
         }
-        else if ( !isValid(nextBigRow, nextBigCol) ){
+        else if ( !isValid(nextBigRow, nextBigCol) || 
+                  board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
             try{
                 BufferedReader input = 
                     new BufferedReader(new InputStreamReader(opponent.getInputStream()));
