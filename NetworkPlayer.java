@@ -43,53 +43,48 @@ public class NetworkPlayer implements GamePlayer{
         this.game = game;
     }
 
-    public void play(){
-        chooseSubBoard();
-        int bigRow = this.game.getNextBigRow();
-        int bigCol = this.game.getNextBigCol();
-        play(bigRow, bigCol);
+    public void play(int bigRow, int bigCol){
+        this.game.setNextBigRow(bigRow);
+        this.game.setNextBigCol(bigCol);
+        play();
     }
 
-    public void play(int bigRow, int bigCol){
+    public void play(){
+        chooseSubBoard();
+        if ( this.isLocal ) playLocal();
+        else playRemote();
+    }
+
+    private void playLocal(){
+
+        int bigRow = this.game.getNextBigRow();
+        int bigCol = this.game.getNextBigCol();
+        String whom = this.symbol;
+        System.out.println(String.format(
+                           "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
         while (true){
             try{    
-                chooseSubBoard();
-                String whom = this.symbol;
+                //chooseSubBoard();
                 System.out.println(String.format(
-                                   "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
-                int subRow = -1;
-                int subCol = -1;
-                if ( this.isLocal ){
-                    System.out.println(String.format(
-                                       "Enter row, col to place %s in the sub-board", whom));
+                                   "Enter row, col to place %s in the sub-board", whom));
 
-                    String[] tokens = this.game.readLine().trim().split(",");
-                    subRow =  Integer.parseInt(tokens[0].trim());
-                    subCol =  Integer.parseInt(tokens[1].trim());
-                }
-                else {
-                    BufferedReader input = 
-                        new BufferedReader(new InputStreamReader(opponent.getInputStream()));
-                    String msg = input.readLine();
-                    String[] tokens = msg.trim().split(",");
-                    subRow = Integer.parseInt(tokens[0].trim());
-                    subCol = Integer.parseInt(tokens[1].trim());
-
-                }
-                this.game.setNextBigRow(subRow);
-                this.game.setNextBigCol(subCol);
+                String[] tokens = this.game.readLine().trim().split(",");
+                int subRow =  Integer.parseInt(tokens[0].trim());
+                int subCol =  Integer.parseInt(tokens[1].trim());
                 if ( this.side == 1 ) {
                     this.game.getBoard().putX(bigRow, bigCol, subRow, subCol);
                 }
                 else {
                     this.game.getBoard().putO(bigRow, bigCol, subRow, subCol);
                 }
-                if ( this.isLocal ){
-                    // send new info to the opponent
-                    PrintWriter out = new PrintWriter(this.opponent.getOutputStream(), true);
-                    String newInfo = String.valueOf(subRow) + ", " + String.valueOf(subCol);
-                    out.println( newInfo ); 
-                }
+                this.game.setNextBigRow(subRow);
+                this.game.setNextBigCol(subCol);
+                /**
+                 * send new info to the opponent
+                 */
+                PrintWriter out = new PrintWriter(this.opponent.getOutputStream(), true);
+                String newInfo = String.valueOf(subRow) + ", " + String.valueOf(subCol);
+                out.println( newInfo ); 
                 this.game.setNextTurn();
                 break;
             }
@@ -99,45 +94,99 @@ public class NetworkPlayer implements GamePlayer{
         }
     }
 
+
+    public void playRemote(){
+
+        int bigRow = this.game.getNextBigRow();
+        int bigCol = this.game.getNextBigCol();
+        String whom = this.symbol;
+        System.out.println(String.format(
+                           "%s Playing cell %1d-%1d", whom, bigRow, bigCol));
+        while (true){
+            try{    
+                int subRow = -1;
+                int subCol = -1;
+                BufferedReader input = 
+                    new BufferedReader(new InputStreamReader(opponent.getInputStream()));
+                String msg = input.readLine();
+                String[] tokens = msg.trim().split(",");
+                subRow = Integer.parseInt(tokens[0].trim());
+                subCol = Integer.parseInt(tokens[1].trim());
+
+                if ( this.side == 1 ) {
+                    this.game.getBoard().putX(bigRow, bigCol, subRow, subCol);
+                }
+                else {
+                    this.game.getBoard().putO(bigRow, bigCol, subRow, subCol);
+                }
+                this.game.setNextBigRow(subRow);
+                this.game.setNextBigCol(subCol);
+                this.game.setNextTurn();
+                break;
+            }
+            catch ( Exception e){
+                System.out.println("invalid selection. Try again.");
+            }
+        }
+    }
+
+
     private void chooseSubBoard(){
+        if ( this.isLocal ) chooseSubBoardLocal();
+        else chooseSubBoardRemote();
+    }
+
+    private void chooseSubBoardLocal(){
+
         String whom = this.symbol; 
         TicTacticsBoard board = this.game.getBoard();
         int nextBigRow = this.game.getNextBigRow();
         int nextBigCol = this.game.getNextBigCol();
-        if ( this.isLocal){
-            while ( !isValid(nextBigRow, nextBigCol) ){
-                System.out.println("Choose sub-board(row, col) to play : ");
-                String[] tokens = this.game.readLine().trim().split(",");
-                nextBigRow = Integer.parseInt(tokens[0].trim());
-                nextBigCol = Integer.parseInt(tokens[1].trim());
-            } 
-            while ( board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
+        while ( !isValid(nextBigRow, nextBigCol) || 
+                board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
+            if ( !isValid(nextBigRow, nextBigCol) ) {
+                System.out.println(String.format(
+                        "choose two integer numbers between 0 and 2 separated by comma."));
+            }
+            else {
                 System.out.println(String.format("sub-board %d-%d is already closed.",
                                                  nextBigRow, nextBigCol));
-                System.out.println(whom + " choose new sub-board(row, col) to play : ");
-                String[] tokens = this.game.readLine().trim().split(",");
-                nextBigRow = Integer.parseInt(tokens[0].trim());
-                nextBigCol = Integer.parseInt(tokens[1].trim());
             }
-            if ( nextBigRow != this.game.getNextBigRow() || 
-                 nextBigCol != this.game.getNextBigCol()) {
 
-                // send new bigRow/bigCol to the opponent
-                try{
-                    PrintWriter out = new PrintWriter(this.opponent.getOutputStream(), true);
-                    String newInfo = String.valueOf(nextBigRow) + ", " + String.valueOf(nextBigCol);
-                    out.println( newInfo ); 
-                }
-                catch (IOException e){
-                    System.out.println(
-                        "unexpected exception caught in sending message to the opponent.");
-                    System.exit(0);
-                }
-                this.game.setNextBigRow(nextBigRow);
-                this.game.setNextBigCol(nextBigCol);
+            System.out.println("Choose new sub-board(row, col) to play : ");
+            String[] tokens = this.game.readLine().trim().split(",");
+            nextBigRow = Integer.parseInt(tokens[0].trim());
+            nextBigCol = Integer.parseInt(tokens[1].trim());
+        } 
+        // if nextBigRow or nextBigCol has been updated, send new ones to the opponent
+        if ( nextBigRow != this.game.getNextBigRow() || 
+             nextBigCol != this.game.getNextBigCol()) {
+
+            /**
+             * send new bigRow/bigCol to the opponent.
+             * This is a blocking method. Blocked until the opponent receive the message.
+             */
+            try{
+                PrintWriter out = new PrintWriter(this.opponent.getOutputStream(), true);
+                String newInfo = String.valueOf(nextBigRow) + ", " + String.valueOf(nextBigCol);
+                out.println( newInfo ); 
             }
+            catch (IOException e){
+                System.out.println(
+                    "unexpected exception caught in sending message to the opponent.");
+                System.exit(0);
+            }
+            this.game.setNextBigRow(nextBigRow);
+            this.game.setNextBigCol(nextBigCol);
         }
-        else if ( !isValid(nextBigRow, nextBigCol) || 
+    }
+
+    private void chooseSubBoardRemote(){
+        String whom = this.symbol; 
+        TicTacticsBoard board = this.game.getBoard();
+        int nextBigRow = this.game.getNextBigRow();
+        int nextBigCol = this.game.getNextBigCol();
+        if ( !isValid(nextBigRow, nextBigCol) || 
                   board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
             try{
                 BufferedReader input = 
