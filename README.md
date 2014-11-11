@@ -14,3 +14,5 @@ over the net-work two-person play version
     java RunNetworkGame
 
 
+### screen shot
+![alt tag](https://raw.githubusercontent.com/Eunsong/nestedTicTacToe/master/tictactics_screenshot.png)
