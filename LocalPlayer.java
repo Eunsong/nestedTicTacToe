@@ -86,7 +86,6 @@ public class LocalPlayer implements GamePlayer{
             nextBigCol = Integer.parseInt(tokens[1].trim());
         } 
         while ( board.evaluateSubBoard(nextBigRow, nextBigCol) != 0 ){
-            System.out.println( board.evaluateSubBoard(nextBigRow, nextBigCol) );
             System.out.println(String.format("sub-board %d-%d is already closed.",
                                              nextBigRow, nextBigCol));
             System.out.println(whom + " choose new sub-board(row, col) to play : ");

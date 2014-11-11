@@ -70,28 +70,23 @@ public class SubBoard{
      ***************************************************************/
 
     // return 1 if X won the game, -1 if O won the game, 0 notdetermined,
-    // -2 draw (fully occupied but no one wins), -3 draw (but not fully occupied)
+    // -2 draw (fully occupied but no one wins)
     public int evaluate(){
-        int totalState = 0;
         // check diagonals
         int diagResult = checkDiags();
-        totalState += diagResult;
-        if ( diagResult != 0 && diagResult != -3 ){
+        if ( diagResult != 0){
             return diagResult;
         }
         int rowResult = 0;
         for ( int col = 0; col < 3; col++){
             rowResult = checkRow(col);
-            totalState += rowResult;
-            if ( rowResult != 0 && rowResult != -3 ) return rowResult;
+            if ( rowResult != 0 ) return rowResult;
         }
         int colResult = 0;
         for ( int row = 0; row < 3; row++){
             colResult = checkCol(row);
-            totalState += colResult;
-            if ( colResult != 0 && colResult != -3 ) return colResult;
+            if ( colResult != 0 ) return colResult;
         }
-        if ( totalState == -21 ) return -3;
         return (this.numberOfOccupiedCells == 9 ? -2 : 0); // draw or undetermined 
     }
 
@@ -102,21 +97,21 @@ public class SubBoard{
              (this.board[0][2] == this.board[2][0] ))){
             return this.board[1][1];
         }
-        return -3;
+        return 0;
     }
     private int checkRow(int col){
         if ( this.board[0][col] == this.board[1][col] &&
              this.board[0][col] == this.board[2][col] ){
             return this.board[0][col];
         }
-        return -3;
+        return 0;
     }
     private int checkCol(int row){
         if ( this.board[row][0] == this.board[row][1] &&
              this.board[row][0] == this.board[row][2] ){
             return this.board[row][0];
         }
-        return -3;
+        return 0;
     }
        
  

@@ -83,11 +83,6 @@ public class TicTactics{
             printBoard();
             int result = board.evaluate();
             if ( result != 0 ){
-                if ( result == -3 ){
-                    System.out.println("draw game!");
-                    close();
-                    System.exit(0);
-                }
                 String whom = ( result == 1 ? "X" : "O");
                 System.out.println(whom + " won the game!\n");
                 close();
