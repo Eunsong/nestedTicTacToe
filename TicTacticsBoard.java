@@ -79,6 +79,19 @@ public class TicTacticsBoard{
     public int evaluateSubBoard(int row, int col){
         return this.board[row][col].evaluate();
     }
+
+
+    // check if still playable subboard is left
+    public boolean isDone(){
+        for ( int row = 0; row < 3; row++){
+            for ( int col = 0; col < 3; col++){
+                if (this.board[row][col].evaluate() == 0){
+                    return false;
+                }
+            }
+        }
+        return true; 
+    }
     /***************************************************************/
 
 

@@ -88,6 +88,11 @@ public class TicTactics{
                 close();
                 System.exit(0);
             }
+            if ( board.isDone() ){
+                System.out.println("game over. tie game!");
+                close();
+                System.exit(0);
+            }
         }
     }
 
